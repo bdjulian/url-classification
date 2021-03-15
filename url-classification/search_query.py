@@ -11,7 +11,7 @@ def search(date_from, date_to, verdict):
         'date_to': date_to,
     }
     r = requests.post(url, data=payload, headers=headers)
-    r.json
+    
     data = r.json()
 
     return(data)
