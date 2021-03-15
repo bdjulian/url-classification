@@ -1,1 +1,1 @@
-{"validation_errors": [{"field": "date_to", "errors": ["This value is not a valid datetime in 'Y-m-d H:i' format."]}], "message": "Input data validation has failed. Please check 'validation_errors' field to get more data."}
+{"search_terms": [{"id": "filetype", "value": "url"}, {"id": "env_id", "value": "100"}, {"id": "verdict", "value": "5"}, {"id": "date_from", "value": "2020-10-08 00:00"}, {"id": "date_to", "value": "2020-10-09 00:00"}], "count": 0, "result": []}
