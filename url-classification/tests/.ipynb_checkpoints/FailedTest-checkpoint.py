@@ -1,0 +1,2 @@
+class ErrorFailedTest(Exception):
+    pass
