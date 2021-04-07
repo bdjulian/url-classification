@@ -51,6 +51,8 @@ Use job_id_extract.py on your dictionary to get each 'job_id' and save it to a l
 
 ### Step 4
 
-Time to use report_get_write.py to take your list of job_id's and retreive each job/url's features. This function will submit GET requests for each job_id passed. There is no saved output, it will put the results into your reports directory.
+Time to use report_get_write.py to take your list of job_id's and retreive each job/url's features. This function will submit GET requests for each job_id passed. There is no saved output, it will save the results into your reports directory.
 
 ### Step 5
+
+Now with 

@@ -1,3 +1,5 @@
+import pandas as pd
+
 def threat_score_extract(my_dict):
     a_dict = {}
     my_list = []
@@ -12,4 +14,5 @@ def threat_score_extract(my_dict):
                     pass
         except:
             pass
-    return(my_list, a_dict)
+    as_series = pd.Series(a_dict)
+    return(as_series)
