@@ -34,10 +34,10 @@ report_write - takes the job_id list extracted from job_id_extract and queries h
 ## General project flow
 
 Building the project for yourself is particularly easy _please don't submit a lot of api requests_ my api key is currently embeded in all the relevant functions
-so please don't cap me out, I also intentionally sleep the functions so I don't break their server. If you'd like to get the reports and the data for yourself delete the contents of both 'data' and 'reports'- The un-commented date ranges found in the notebook are big enough to have the code function. If you don't care to collect the data yourself please skip to step blank, otherwise start at step 1. _FYI most functions do not share the name of their .py file, please inspect each to see the real name of the function._
+so please don't cap me out, I also intentionally sleep the functions so I don't break their server. If you'd like to get the reports and the data for yourself delete the contents of both 'data' and 'reports'- The un-commented date ranges found in the notebook are big enough to have the code function. If you don't care to collect the data yourself you can just clone this repo and run my notebook, otherwise start at step 1. _FYI most functions do not share the name of their .py file, please inspect each to see the real name of the function._
 
 
-### Step 1 - 
+### Step 1
 
 The first step is to use search_and_write.py to submit POST requests to Hybrid-Analysis.com. Use the provided date range as the input into the function, the function has no saveable output, it will just grab the data in JSON format and save it to your 'data' directory. The data contained in this JSON file is relatively unimportant, what is important are the 'job_id' and the 'threat_score'. The 'job_id' will be utilized later to obtain feature information for each job. And the 'threat_score' will be the target variable when it comes time for our regression predictions. Each job is also a single URL (typically).
 
@@ -55,4 +55,12 @@ Time to use report_get_write.py to take your list of job_id's and retreive each 
 
 ### Step 5
 
-Now with 
+Now pass the list from job_id_extract.py to feature_extract.py to get a dictionary that has jobs as keys and basic features as values. Save the output.
+
+### Step 6
+
+Pass this dictionary to make_df.py and save the output as this is the final dataframe. Using the code and date range provided it should have 159 rows and 22 columns - 1 of which is the target.
+
+### Step 7
+
+Now you have a complete sample dataset to experiment with as you please. A simple ML analysis is located in my .ipynb notebook.
