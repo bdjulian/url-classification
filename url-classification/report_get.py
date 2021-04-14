@@ -8,6 +8,6 @@ def report(job_id):
     
     r = requests.get(url, headers=headers)
     
-    report = json.loads(r.text)
+    reporty = json.loads(r.text)
     
-    return(report)
+    return(reporty)
