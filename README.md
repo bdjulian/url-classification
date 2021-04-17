@@ -7,6 +7,10 @@ I had serious issues with whitespace indentation and syntax stuff trying to do
 (1) store multiple functions in a .py and (2) add docstrings, so for now all docstring-esque explanations
 of functions will be here.
 
+## Running Unit Tests
+
+My project is not laid out correctly as a python packaged environment/the-correct-word. Basically, pytest must be run form the tests folder in order for imports to execute successfully.
+
 ## Function Explanations
 
 search_query.py  
