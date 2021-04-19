@@ -23,7 +23,7 @@ def feature_extraction(my_list):
             x = json.load(json_file)
 
 
-            #acg length of attribute vlaues
+            #avg length of attribute vlaues
             lenRep = len(x['response']['Event']['Attribute'])
             list_of_lengths = []
             sum = 0
@@ -76,6 +76,8 @@ def feature_extraction(my_list):
                     features.append(1)
                 else:
                     features.append(0)
+            
+            
 
 
             a_dict[f'{job_id}'] = features
