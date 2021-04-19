@@ -23,7 +23,7 @@ def feature_extraction(my_list):
             x = json.load(json_file)
 
 
-            #acg length of attribute vlaues
+            #avg length of attribute vlaues
             lenRep = len(x['response']['Event']['Attribute'])
             list_of_lengths = []
             sum = 0
@@ -76,6 +76,16 @@ def feature_extraction(my_list):
                     features.append(1)
                 else:
                     features.append(0)
+            
+            frequencies = {'External analysis': 0, 'Payload delivery': 0, 'Network activity': 0, 'Payload installation': 0, 'Persistence mechanism': 0, 'Artifacts dropped': 0}
+            for i in x['response']['Event']['Attribute']:
+                if i['category'] in frequencies:
+                    frequencies[i['category']] += 1
+                else:
+                    frequencies[i['category']] = 0
+            for i in frequencies.values():
+                    features.append(i)
+# 'EA_count', 'PD_count', 'NA_count', 'PI_count', 'PM_count', 'AD_count'
 
 
             a_dict[f'{job_id}'] = features
@@ -96,7 +106,7 @@ def job_id_extract(my_dict):
 
 def frame_maker(dict_of_features, dict_make_dict):
     df = pd.DataFrame(dict_of_features).T
-    cols = ['job_id','avg_val_len', 'total_val_len','category_count','Artifacts dropped', 'External analysis', 'Network activity', 'Payload delivery', 'Payload installation', 'Persistence mechanism', 'filename|md5', 'user-agent', 'domain|ip', 'mutex', 'ip-dst', 'regkey|value', 'comment', 'filename|sha512', 'domain', 'filename|sha256', 'link', 'filename|sha1']
+    cols = ['job_id','avg_val_len', 'total_val_len','category_count','Artifacts dropped', 'External analysis', 'Network activity', 'Payload delivery', 'Payload installation', 'Persistence mechanism', 'filename|md5', 'user-agent', 'domain|ip', 'mutex', 'ip-dst', 'regkey|value', 'comment', 'filename|sha512', 'domain', 'filename|sha256', 'link', 'filename|sha1', 'EA_count', 'PD_count', 'NA_count', 'PI_count', 'PM_count', 'AD_count']
     df = df.reset_index()
     df.columns = cols
 
