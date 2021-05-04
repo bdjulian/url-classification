@@ -7,41 +7,66 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage{hyperref}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Conference Paper Title*\\
-{\footnotesize \textsuperscript{*}Note: Sub-titles are not captured in Xplore and
-should not be used}
-\thanks{Identify applicable funding agency here. If none, delete this.}
+\title{URL Threat Score Analysis\\
 }
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Brandon Julian}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
+\author{\IEEEauthorblockN{ Brandon Julian}
+\IEEEauthorblockA{\textit{University of Colorado Boulder} \\
+Boulder, United States \\
+brju4682@colorado.edu \\
+\url{https://github.com/bdjulian/url-threatscore-project}}
 }
 
 \maketitle
 
 \begin{abstract}
-I understand this is not the point of an abstract, however I am going to preface this submission by saying I am making a slight pivot from my original project idea submission. I am still attempting to interpret/reverse-engineer Hybrid Analysis™ Falcon Sandbox© incident response threat assessments, but I am switching from executable malware files to malicious URL detection. Hybrid Analysis’s API also contains URL reports and I thought it would be fitting to instead attempt to apply myself there within the scope of my skills. 
+The Hybrid-Analysis website could possibly be a great resource for dataset creation as the number of threats is extensive (URL, exe, netflows, cmd, etc.). In my attempt to interpret/reverse-engineer Hybrid Analysis™ Falcon Sandbox© incident response threat assessments for malicious URL's; I was successful in determining some feature importances. Using a balance of features that weigh complexity and simplicty I was also successful in rather accurate predictions of H.A URL threat scores on a self created set of over X URL's. Hybrid Analysis's Falcon Sandbox incident response software weighs complexity and verbosity disproportionately compared to other features, and if a URL spawns unnecessary Network Activity it is typically a highly malicious domain. The final model used was a simple Random Forest Regressor tuned by GridSearch and model introspection was done using a variety of methods. If a user wanted to deploy this model they would need to collect their URL traffic information similarly to Hybrid Analysis.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Malicious URL detection, features, static-analysis, dynamic-analysis
+Malicious URL detection, features, static-analysis, Network Activity, Payload Delivery, Mutex, partial dependence
 \end{IEEEkeywords}
 
 \section{Introduction}
-As the internet continues to grow, malicious intent also grows with it. The potential for users to be scammed or taken advantage of increases with the ever-evolving attack methods of the unscrupulous. Very Dramatic.
+As the internet continues to grow, malicious intent also grows with it. The potential for users to be scammed or taken advantage of increases with the ever-evolving attack methods of the unscrupulous. The information and digital security space is an uneven arms race between malicious actors and their victims. By utilizing resources like Hybrid Analysis more tools can be created to help protect ourselves.
 
-\section{Data Collection}
+\section{Business Understanding}
+
+The goal of this project is to observe what is important in a cutting-edge analysis algorithm of URL's which is otherwise obfuscated as a proprietary product. This modeling process can either be used to deliver on a prediction or inform research and security individuals. By utilizing data already extracted by Hybrid Analysis Falcon Sandbox and constructing it into features for machine learning (ML) it is possible to see what information is most important to an extremely successful product like Falcon Sandbox. If the top features are known it can inform other forensic teams what to look for in their own analysis without needing to deploy a proprietary product. 
+
+\section{Data Understanding}
 
 \subsection{Hybrid Analysis}
 
-To quote their FAQ, “This webpage is a free malware analysis service for the community. Using this service you can submit files for in-depth static and dynamic analysis.”  Which is true, malware files can be submitted to their site for analysis. However, Hybrid Analysis (H.A.) also produces a product they call Falcon Sandbox. Which is a much more verbose system that does most of the dynamic analysis behind the scenes. What is very cool about their website-product integration is when items are submitted for analysis by a user of their product Falcon Sandbox it by default generates a high-level report of the item in question. To include interesting features of the item, whether that be signs of attempted access escalation, known malicious artifacts are present, or process spawning. It also includes a threat score out of one-hundred and a final label in the list of malicious, suspicious, no specific threat, no verdict, or whitelisted.
+To quote their FAQ, “This webpage is a free malware analysis service for the community. Using this service one can submit files for in-depth static and dynamic analysis.”  Files can be submitted to their site for analysis. However, Hybrid Analysis also produces a product they call Falcon Sandbox. Which is a much more verbose system that does most of the dynamic analysis behind the scenes. What is very cool about their website-product integration is when items are submitted for analysis by a user of their product Falcon Sandbox; it by default generates a high-level report of the item in question. This report include interesting features of the item, whether that be signs of attempted access escalation, known malicious artifacts are present, or process spawning. It also includes a threat score out of one-hundred and a final label in the list of malicious, suspicious, no specific threat, no verdict, or whitelisted. The information is stored in two parts - both accessible through their API with a CURL request, a more in-depth explanation on the dataset generation can be found on my \href{https://github.com/bdjulian/url-threatscore-project}{repository}
+
+\subsection{Target Variable}
+
+The target for each URL is a continuous number from 0-100 titled 'Threat Score' on the Hybrid Analysis website. All collected URL samples are classified as malicious by Hybrid Analysis intentionally as the intent of the project is to determine what makes something \textit{more dangerous} not necessarily malicious overall.
+
+\subsection{Features}
+
+28 features were created utilizing the Falcon Sandbox reports, the code to create them as well as in-depth explanations of them are on my repository. Brief explanations will be here.
+
+\begin{itemize}
+	\item avg-val-length: Average length of value key data in report. Total value divided by number of key value pairs. The value is representative of its type, a payload will have a filename and a hash of the file. While a peristence mechanism will have a registry key and its accompanying value.\\
+
+	\item total-val-len: Total length of value key data.\\
+
+	\item category-count: The number of categories found in the report. A larger category-count means a URL is more complex, possibly possessing multiple types of spawned network activity or multiple methods of payload delivery and installation. The possible unqiue values are: Artifacts Dropped, External Analysis, Network Activity, Payload Delivery, Payload Installation, Persistence Mechanism.\\
+
+	\item Each category type is also a one-hot encoded feature for each row to identify if a malicious URL possesss at least one method, file, or action of the above listed categories. (6 total columns).\\
+
+	\item Each type of category is also one hot encoded: filename-md5, user-agent, domain-ip, mutex, ip-dst, regkey-value, comment, filename-sha512, domain, filename-sha256, link, filename-sha1. (12 total columns)\\
+
+	\item Frequency values were also created form each individual category: this creates 6 more columns for each row which shows how many instances of each category make up the total.\\
+
+\end{itemize}
 
 \subsection{Hybrid Analysis API - Search Query}
 

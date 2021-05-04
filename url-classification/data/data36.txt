@@ -1,0 +1,1 @@
+{"search_terms": [{"id": "filetype", "value": "url"}, {"id": "env_id", "value": "100"}, {"id": "verdict", "value": "5"}, {"id": "date_from", "value": "2020-11-05 00:00"}, {"id": "date_to", "value": "2020-11-06 00:00"}], "count": 0, "result": []}

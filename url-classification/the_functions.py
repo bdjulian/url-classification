@@ -17,78 +17,80 @@ category_list = ['Artifacts dropped', 'External analysis', 'Network activity', '
 types_list = ['filename|md5', 'user-agent', 'domain|ip', 'mutex', 'ip-dst', 'regkey|value', 'comment', 'filename|sha512', 'domain', 'filename|sha256', 'link', 'filename|sha1']
 def feature_extraction(my_list):
     for i in my_list:
-        with open(f'reports/reports{i}.txt') as json_file:
-            features = []
-            job_id = i
-            x = json.load(json_file)
+        try:
+            with open(f'reports/reports{i}.txt') as json_file:
+                features = []
+                job_id = i
+                x = json.load(json_file)
+                print(i)
+                #avg length of attribute vlaues
+                lenRep = len(x['response']['Event']['Attribute'])
+                list_of_lengths = []
+                sum = 0
+
+                for i in x['response']['Event']['Attribute']:
+                    list_of_lengths.append(i['value'])
+                for i in list_of_lengths:
+                    sum += len(i)
+                avg_len = (sum/lenRep)
+
+                features.append(avg_len)
 
 
-            #avg length of attribute vlaues
-            lenRep = len(x['response']['Event']['Attribute'])
-            list_of_lengths = []
-            sum = 0
+                # total length of attribute values
+                list_of_lengths = []
+                sum = 0
 
-            for i in x['response']['Event']['Attribute']:
-                list_of_lengths.append(i['value'])
-            for i in list_of_lengths:
-                sum += len(i)
-            avg_len = (sum/lenRep)
+                for i in x['response']['Event']['Attribute']:
+                    list_of_lengths.append(i['value'])
+                for i in list_of_lengths:
+                    sum += len(i)
 
-            features.append(avg_len)
+                features.append(sum)
 
+                # count of categories
+                list = []
+                for i in x['response']['Event']['Attribute']:
+                    list.append(i['category'])
+                len_list = len(list)
 
-            # total length of attribute values
-            list_of_lengths = []
-            sum = 0
+                features.append(len_list)
 
-            for i in x['response']['Event']['Attribute']:
-                list_of_lengths.append(i['value'])
-            for i in list_of_lengths:
-                sum += len(i)
+                # one hotting categories
+                cats = []
+                for i in x['response']['Event']['Attribute']:
+                    cats.append(i['category'])
+                cats = set(cats)
+                for i in category_list:
+                    if i in cats:
+                        features.append(1)
+                    else:
+                        features.append(0)
 
-            features.append(sum)
+                types = []
+                for i in x['response']['Event']['Attribute']:
+                    types.append(i['type'])
+                types = set(types)
+                for i in types_list:
+                    if i in types:
+                        features.append(1)
+                    else:
+                        features.append(0)
 
-            # count of categories
-            list = []
-            for i in x['response']['Event']['Attribute']:
-                list.append(i['category'])
-            len_list = len(list)
-
-            features.append(len_list)
-
-            # one hotting categories
-            cats = []
-            for i in x['response']['Event']['Attribute']:
-                cats.append(i['category'])
-            cats = set(cats)
-            for i in category_list:
-                if i in cats:
-                    features.append(1)
-                else:
-                    features.append(0)
-
-            types = []
-            for i in x['response']['Event']['Attribute']:
-                types.append(i['type'])
-            types = set(types)
-            for i in types_list:
-                if i in types:
-                    features.append(1)
-                else:
-                    features.append(0)
-            
-            frequencies = {'External analysis': 0, 'Payload delivery': 0, 'Network activity': 0, 'Payload installation': 0, 'Persistence mechanism': 0, 'Artifacts dropped': 0}
-            for i in x['response']['Event']['Attribute']:
-                if i['category'] in frequencies:
-                    frequencies[i['category']] += 1
-                else:
-                    frequencies[i['category']] = 0
-            for i in frequencies.values():
-                    features.append(i)
-# 'EA_count', 'PD_count', 'NA_count', 'PI_count', 'PM_count', 'AD_count'
+                frequencies = {'External analysis': 0, 'Payload delivery': 0, 'Network activity': 0, 'Payload installation': 0, 'Persistence mechanism': 0, 'Artifacts dropped': 0}
+                for i in x['response']['Event']['Attribute']:
+                    if i['category'] in frequencies:
+                        frequencies[i['category']] += 1
+                    else:
+                        frequencies[i['category']] = 0
+                for i in frequencies.values():
+                        features.append(i)
+    # 'EA_count', 'PD_count', 'NA_count', 'PI_count', 'PM_count', 'AD_count'
 
 
-            a_dict[f'{job_id}'] = features
+                a_dict[f'{job_id}'] = features
+        except:
+            pass
     return(a_dict)
 
 def job_id_extract(my_dict):
