@@ -1,4 +1,4 @@
-# url-classification
+# url-threatscore-prediction
 Project for URL classification attempting to replicate Hybrid Analysis threat
 score using regression. Unique feature engineering is done on reports gathered from their dynamic testing suite Falcon Sandbox.
 functions and their uses:
