@@ -22,7 +22,7 @@ def feature_extraction(my_list):
                 features = []
                 job_id = i
                 x = json.load(json_file)
-                print(i)
+#                 print(i)
                 #avg length of attribute vlaues
                 lenRep = len(x['response']['Event']['Attribute'])
                 list_of_lengths = []
