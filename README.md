@@ -1,11 +1,10 @@
 # url-threatscore-prediction
+
+A writeup of my findings is located in project-reports as url-threatscore-report.pdf
+
 Project for URL classification attempting to replicate Hybrid Analysis threat
 score using regression. Unique feature engineering is done on reports gathered from their dynamic testing suite Falcon Sandbox.
 functions and their uses:
-
-I had serious issues with whitespace indentation and syntax stuff trying to do
-(1) store multiple functions in a .py and (2) add docstrings, so for now all docstring-esque explanations
-of functions will be here.
 
 ## Running Unit Tests
 
